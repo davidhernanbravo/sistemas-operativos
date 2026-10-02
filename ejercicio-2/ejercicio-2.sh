@@ -6,22 +6,22 @@ declare -r ARCHIVO_PROD="productos.tsv"
 declare -r ARCHIVO_USRS="usuarios.tsv"
 declare -r ARCHIVO_HTML="productos.html"
 
-# Inicialización de archivos si no existen para evitar errores de lectura
+# Inicialización de archivos si no existen para evitar errores de lectura.
 touch "$ARCHIVO_PROD" "$ARCHIVO_USRS"
 
-# ==========================================
-# FUNCIONES DE SEGURIDAD Y AUTENTICACIÓN
-# ==========================================
+# ========================================
+#  FUNCIONES DE SEGURIDAD Y AUTENTICACIÓN
+# ========================================
 
-# Función para generar hash SHA256 extrayendo solo el hash del output
+# Función para generar hash SHA256 extrayendo solo el hash del output.
 generar_hash() {
     local password="$1"
-    # Redirección a buffer/variable (aplicando dato útil de la consigna)
+    # Redirección a buffer/variable (aplicando dato útil de la consigna).
     local hash_valor=$(echo -n "$password" | sha256sum | awk '{print $1}')
     echo "$hash_valor"
 }
 
-# Verificación de existencia de usuario parseando solo la columna 1
+# Verificación de existencia de usuario parseando solo la columna 1.
 existe_usuario() {
     local user="$1"
     awk -F'\t' -v u="$user" '$1==u {f=1; exit} END {if(f) exit 0; else exit 1}' "$ARCHIVO_USRS"
@@ -44,7 +44,7 @@ registrar_usuario() {
     # --- CAMBIO REQ 3: Cifrado con sha256sum ---
     hash_p=$(generar_hash "$pass")
 
-    # Escritura en TSV
+    # Escritura en TSV.
     printf "%s\t%s\n" "$user" "$hash_p" >> "$ARCHIVO_USRS"
     printf "Usuario registrado exitosamente.\n"
 }
@@ -59,7 +59,7 @@ iniciar_sesion() {
         echo
 
         if existe_usuario "$user"; then
-            # Se extrae la columna 2 correspondiente al hash del usuario ingresado
+            # Se extrae la columna 2 correspondiente al hash del usuario ingresado.
             hash_guardado=$(awk -F'\t' -v u="$user" '$1==u {print $2}' "$ARCHIVO_USRS")
             hash_p=$(generar_hash "$pass")
 
@@ -76,11 +76,11 @@ iniciar_sesion() {
     return 1
 }
 
-# ==========================================
-# FUNCIONES DE GESTIÓN DE PRODUCTOS (TSV)
-# ==========================================
+# =========================================
+#  FUNCIONES DE GESTIÓN DE PRODUCTOS (TSV)
+# =========================================
 
-# Verifica si el ID existe analizando estrictamente la columna 1
+# Verifica si el ID existe analizando estrictamente la columna 1.
 existe_producto() {
     local id="$1"
     awk -F'\t' -v id="$id" '$1==id {f=1; exit} END {if(f) exit 0; else exit 1}' "$ARCHIVO_PROD"
@@ -160,7 +160,7 @@ mostrar() {
 
 generar_reporte() {
     # --- CAMBIO REQ 1: Generación de tabla en archivo .html ---
-    # Redireccionamiento de bloque para inyectar todo el output al archivo
+    # Redireccionamiento de bloque para inyectar todo el output al archivo.
     {
         echo "<!DOCTYPE html>"
         echo "<html lang=\"es\">"
@@ -192,9 +192,9 @@ generar_reporte() {
     printf "Reporte HTML generado correctamente en: %s\n" "$ARCHIVO_HTML"
 }
 
-# ==========================================
-# CONTROLADORES DE MENÚ
-# ==========================================
+# =======================
+#  CONTROLADORES DE MENÚ
+# =======================
 
 menu_principal() {
     local opcion
