@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Panel de Inventario</title>
+        <link rel="stylesheet" href="estilos.css">
+    </head>
+
+    <body>
+        <!-- 
+        =======================================================================
+         ARCHIVO: interfaz_web/panel_inventario.html
+         DESCRIPCIÓN: Interfaz principal para el ABM de productos y generación
+         de reportes. Utiliza modales nativos (<dialog>) para los formularios.
+        =======================================================================
+        -->
+
+        <nav class="barra-navegacion">
+            <div class="nav-brand">Gestor de Inventario</div>
+            <div class="nav-usuario">
+                <span>Usuario: <strong id="lbl-usuario">---</strong></span>
+                <button id="btn-salir" class="btn btn-peligro btn-chico">Cerrar Sesión</button>
+            </div>
+        </nav>
+
+        <main class="contenedor-principal">
+            <header class="cabecera-acciones">
+                <h2>Listado de Productos</h2>
+                <div class="grupo-botones">
+                    <button id="btn-abrir-alta" class="btn btn-primario">Nuevo Producto</button>
+                    <button id="btn-abrir-editar" class="btn btn-secundario">Editar</button>
+                    <button id="btn-abrir-baja" class="btn btn-peligro">Eliminar</button>
+                    <button id="btn-reporte" class="btn btn-info">Generar Reporte HTML</button>
+                </div>
+            </header>
+
+            <div id="caja-alerta-panel" class="alerta oculto"></div>
+
+            <section class="contenedor-tabla">
+                <table id="tabla-productos">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Precio ($)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpo-tabla">
+                        <!-- Los datos se inyectan acá dinámicamente mediante JS. -->
+                        <tr><td colspan="3" class="texto-centro">Cargando inventario...</td></tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+
+        <!-- ================= MODALES NATIVOS ================= -->
+
+        <!-- Modal Alta. -->
+        <dialog id="modal-alta" class="modal">
+            <h3>Alta de Producto</h3>
+            <form id="form-alta">
+                <div class="grupo-control">
+                    <label for="alta-id">ID (Numérico):</label>
+                    <input type="number" id="alta-id" required>
+                </div>
+                <div class="grupo-control">
+                    <label for="alta-nombre">Nombre:</label>
+                    <input type="text" id="alta-nombre" required autocomplete="off">
+                </div>
+                <div class="grupo-control">
+                    <label for="alta-precio">Precio:</label>
+                    <input type="number" step="0.01" id="alta-precio" required>
+                </div>
+                <div class="modal-acciones">
+                    <button type="submit" class="btn btn-primario">Guardar</button>
+                    <button type="button" class="btn btn-secundario cerrar-modal">Cancelar</button>
+                </div>
+            </form>
+        </dialog>
+
+        <!-- Modal Edición. -->
+        <dialog id="modal-editar" class="modal">
+            <h3>Editar Producto</h3>
+            <form id="form-editar">
+                <div class="grupo-control">
+                    <label for="edit-id">ID a editar:</label>
+                    <input type="number" id="edit-id" required>
+                </div>
+                <div class="grupo-control">
+                    <label for="edit-nombre">Nuevo Nombre:</label>
+                    <input type="text" id="edit-nombre" required autocomplete="off">
+                </div>
+                <div class="grupo-control">
+                    <label for="edit-precio">Nuevo Precio:</label>
+                    <input type="number" step="0.01" id="edit-precio" required>
+                </div>
+                <div class="modal-acciones">
+                    <button type="submit" class="btn btn-primario">Actualizar</button>
+                    <button type="button" class="btn btn-secundario cerrar-modal">Cancelar</button>
+                </div>
+            </form>
+        </dialog>
+
+        <!-- Modal Baja -->
+        <dialog id="modal-baja" class="modal">
+            <h3>Eliminar Producto</h3>
+            <form id="form-baja">
+                <div class="grupo-control">
+                    <label for="baja-id">ID a eliminar:</label>
+                    <input type="number" id="baja-id" required>
+                </div>
+                <p class="texto-peligro">Esta acción no se puede deshacer.</p>
+                <div class="modal-acciones">
+                    <button type="submit" class="btn btn-peligro">Confirmar Baja</button>
+                    <button type="button" class="btn btn-secundario cerrar-modal">Cancelar</button>
+                </div>
+            </form>
+        </dialog>
+
+        <!-- Importamos el cliente API. -->
+        <script src="cliente_api.js"></script>
+
+        <!-- Lógica de la interfaz del Panel. -->
+        <script>
+            // 1. Control de acceso seguro.
+            requerirAutenticacion();
+            document.getElementById('lbl-usuario').textContent = sessionStorage.getItem('user_name');
+
+            // 2. Referencias al DOM.
+            const cuerpoTabla = document.getElementById('cuerpo-tabla');
+            const cajaAlerta = document.getElementById('caja-alerta-panel');
+            
+            const modalAlta = document.getElementById('modal-alta');
+            const modalEditar = document.getElementById('modal-editar');
+            const modalBaja = document.getElementById('modal-baja');
+
+            // 3. Funciones de utilidad visual.
+            function mostrarAlertaPanel(mensaje, tipo) {
+                cajaAlerta.textContent = mensaje;
+                cajaAlerta.className = `alerta alerta-${tipo}`;
+                cajaAlerta.style.display = 'block';
+                setTimeout(() => cajaAlerta.style.display = 'none', 4000);
+            }
+
+            // Cierra todos los modales y limpia sus formularios internos.
+            document.querySelectorAll('.cerrar-modal').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const modal = e.target.closest('dialog');
+                    modal.close();
+                    modal.querySelector('form').reset();
+                });
+            });
+
+            // 4. Lógica de carga de datos (Read).
+            async function cargarTabla() {
+                cuerpoTabla.innerHTML = '<tr><td colspan="3" class="texto-centro">Sincronizando con base de datos...</td></tr>';
+                const respuesta = await ClienteAPI.listarProductos();
+
+                if (respuesta.status === "success" && respuesta.data) {
+                    cuerpoTabla.innerHTML = ''; // Limpiamos tabla.
+                    if (respuesta.data.length === 0) {
+                        cuerpoTabla.innerHTML = '<tr><td colspan="3" class="texto-centro">El inventario está vacío.</td></tr>';
+                        return;
+                    }
+                    
+                    respuesta.data.forEach(prod => {
+                        const fila = document.createElement('tr');
+                        // Forzamos formato numérico a 2 decimales para el precio.
+                        const precioFormat = Number(prod.precio).toFixed(2);
+                        fila.innerHTML = `
+                            <td>${prod.id}</td>
+                            <td>${prod.nombre}</td>
+                            <td>$ ${precioFormat}</td>
+                        `;
+                        cuerpoTabla.appendChild(fila);
+                    });
+                } else {
+                    cuerpoTabla.innerHTML = '<tr><td colspan="3" class="texto-centro texto-peligro">Error al cargar datos.</td></tr>';
+                    mostrarAlertaPanel(respuesta.message || "Fallo al listar.", "error");
+                }
+            }
+
+            // Inicializamos la tabla al cargar la página.
+            cargarTabla();
+
+            // 5. Manejo de Eventos (Botones principales).
+            document.getElementById('btn-salir').addEventListener('click', () => ClienteAPI.cerrarSesion());
+            document.getElementById('btn-abrir-alta').addEventListener('click', () => modalAlta.showModal());
+            document.getElementById('btn-abrir-editar').addEventListener('click', () => modalEditar.showModal());
+            document.getElementById('btn-abrir-baja').addEventListener('click', () => modalBaja.showModal());
+
+            document.getElementById('btn-reporte').addEventListener('click', async () => {
+                const btn = document.getElementById('btn-reporte');
+                btn.disabled = true;
+                btn.textContent = "Generando...";
+
+                const respuesta = await ClienteAPI.generarReporte();
+                
+                if (respuesta.status === "success") {
+                    mostrarAlertaPanel(respuesta.message, "exito");
+                    // Abrimos el reporte generado en una pestaña nueva.
+                    window.open(respuesta.url, '_blank');
+                } else {
+                    mostrarAlertaPanel(respuesta.message, "error");
+                }
+
+                btn.disabled = false;
+                btn.textContent = "Generar Reporte HTML";
+            });
+
+            // 6. Manejo de Eventos (Formularios de ABM).
+            
+            // Alta
+            document.getElementById('form-alta').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = document.getElementById('alta-id').value;
+                const nombre = document.getElementById('alta-nombre').value;
+                const precio = document.getElementById('alta-precio').value;
+
+                const rta = await ClienteAPI.altaProducto(id, nombre, precio);
+                if (rta.status === "success") {
+                    mostrarAlertaPanel(rta.message, "exito");
+                    modalAlta.close();
+                    e.target.reset();
+                    cargarTabla(); // Refrescamos vista.
+                } else {
+                    mostrarAlertaPanel(rta.message, "error");
+                }
+            });
+
+            // Edición
+            document.getElementById('form-editar').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = document.getElementById('edit-id').value;
+                const nombre = document.getElementById('edit-nombre').value;
+                const precio = document.getElementById('edit-precio').value;
+
+                const rta = await ClienteAPI.editarProducto(id, nombre, precio);
+                if (rta.status === "success") {
+                    mostrarAlertaPanel(rta.message, "exito");
+                    modalEditar.close();
+                    e.target.reset();
+                    cargarTabla();
+                } else {
+                    mostrarAlertaPanel(rta.message, "error");
+                }
+            });
+
+            // Baja
+            document.getElementById('form-baja').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = document.getElementById('baja-id').value;
+
+                const rta = await ClienteAPI.bajaProducto(id);
+                if (rta.status === "success") {
+                    mostrarAlertaPanel(rta.message, "exito");
+                    modalBaja.close();
+                    e.target.reset();
+                    cargarTabla();
+                } else {
+                    mostrarAlertaPanel(rta.message, "error");
+                }
+            });
+        </script>
+
+    </body>
+
+</html>
