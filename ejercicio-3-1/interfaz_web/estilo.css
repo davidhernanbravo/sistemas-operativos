@@ -1,0 +1,269 @@
+/**
+ * ========================================================================
+ *  ARCHIVO: interfaz_web/estilos.css
+ *  DESCRIPCIÓN: Hoja de estilos centralizada. Utiliza variables CSS para 
+ *  mantener la coherencia visual y facilitar la escalabilidad del diseño.
+ * ========================================================================
+ */
+
+:root {
+    /* Paleta de colores base */
+    --color-fondo: #f8f9fa;
+    --color-texto: #212529;
+    --color-primario: #0d6efd;
+    --color-primario-hover: #0b5ed7;
+    --color-secundario: #6c757d;
+    --color-secundario-hover: #5c636a;
+    --color-peligro: #dc3545;
+    --color-peligro-hover: #bb2d3b;
+    --color-info: #0dcaf0;
+    --color-info-hover: #31d2f2;
+    --color-exito: #198754;
+    
+    /* Variables de estructura */
+    --fuente-principal: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --radio-borde: 8px;
+    --sombra-caja: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--fuente-principal);
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    line-height: 1.5;
+}
+
+/* ================== LAYOUTS GENERALES ================== */
+
+.contenedor-central {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.tarjeta {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-caja);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.tarjeta h2 { margin-bottom: 0.5rem; }
+.tarjeta p { color: var(--color-secundario); margin-bottom: 1.5rem; }
+
+.contenedor-principal {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* ================== BARRA DE NAVEGACIÓN ================== */
+
+.barra-navegacion {
+    background-color: #fff;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+}
+
+.nav-brand {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--color-primario);
+}
+
+.nav-usuario {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* ================== FORMULARIOS ================== */
+
+.grupo-control {
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+.grupo-control label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.grupo-control input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+.grupo-control input:focus {
+    outline: none;
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+}
+
+/* ================== BOTONES ================== */
+
+.grupo-botones {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.btn-chico {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.btn-primario {
+    background-color: var(--color-primario);
+    color: #fff;
+}
+.btn-primario:hover:not(:disabled) { background-color: var(--color-primario-hover); }
+
+.btn-secundario {
+    background-color: var(--color-secundario);
+    color: #fff;
+}
+.btn-secundario:hover:not(:disabled) { background-color: var(--color-secundario-hover); }
+
+.btn-peligro {
+    background-color: var(--color-peligro);
+    color: #fff;
+}
+.btn-peligro:hover:not(:disabled) { background-color: var(--color-peligro-hover); }
+
+.btn-info {
+    background-color: var(--color-info);
+    color: #000;
+}
+.btn-info:hover:not(:disabled) { background-color: var(--color-info-hover); }
+
+.btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* ================== ALERTAS ================== */
+
+.alerta {
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+.oculto { display: none; }
+
+.alerta-exito {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #badbcc;
+}
+
+.alerta-error {
+    background-color: #f8d7da;
+    color: #842029;
+    border: 1px solid #f5c2c7;
+}
+
+/* ================== TABLA DE DATOS ================== */
+
+.cabecera-acciones {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.contenedor-tabla {
+    background-color: #fff;
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-caja);
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+tbody tr:hover {
+    background-color: rgba(0,0,0,0.02);
+}
+
+.texto-centro { text-align: center; }
+.texto-peligro { color: var(--color-peligro); font-weight: bold; }
+
+/* ================== MODALES (DIALOG) ================== */
+
+.modal {
+    margin: auto;
+    padding: 2rem;
+    border: none;
+    border-radius: var(--radio-borde);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 400px;
+}
+
+.modal::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+}
+
+.modal h3 {
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--color-fondo);
+    padding-bottom: 0.5rem;
+}
+
+.modal-acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
