@@ -1,0 +1,19 @@
+2026-10-19 08:31:42	-	david	Registro de nuevo usuario: david
+2026-10-19 08:31:51	1	david	Inicio de sesión exitoso
+2026-10-19 08:32:00	-	-	Consulta de listado de productos
+2026-10-19 08:33:34	-	-	Alta de producto ID: 1 (Teclado)
+2026-10-19 08:33:50	-	-	Alta de producto ID: 2 (Mouse)
+2026-10-19 08:33:55	-	-	Consulta de listado de productos
+2026-10-19 08:34:31	-	-	Alta de producto ID: 3 (Memoria RAM 8Gb)
+2026-10-19 08:34:57	-	-	Edición de producto ID: 3
+2026-10-19 08:35:03	-	-	Consulta de listado de productos
+2026-10-19 08:35:18	-	-	Baja de producto ID: 3
+2026-10-19 08:35:21	-	-	Consulta de listado de productos
+2026-10-19 08:54:35	1	david	Inicio de sesión exitoso
+2026-10-19 08:54:49	-	david	Intento de inicio de sesión fallido (mala contraseña) para usuario: david
+2026-10-19 08:54:56	-	david	Intento de inicio de sesión fallido (mala contraseña) para usuario: david
+2026-10-19 08:55:04	-	david	Intento de inicio de sesión fallido (mala contraseña) para usuario: david
+2026-10-19 08:55:13	-	-	Intento de inicio de sesión fallido (usuario inexistente): DAVID
+2026-10-19 08:55:24	1	david	Inicio de sesión exitoso
+2026-10-19 08:55:30	-	-	Consulta de listado de productos
+2026-10-19 08:55:39	-	-	Generación de reporte HTML

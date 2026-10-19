@@ -14,7 +14,7 @@ declare -r RUTA_BASE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # CAMBIO: Se agregaron variables globales para estandarizar la interfaz Whiptail.
 declare -r TUI_ALTO=20
 declare -r TUI_ANCHO=70
-declare -r TUI_TITULO="Gestor de Inventario TUI - ISFT 151"
+declare -r TUI_TITULO="Gestor de Inventario TUI"
 
 # Rutas absolutas a los archivos de base de datos.
 declare -r DB_FILE="${RUTA_BASE}/base_de_datos/datos.sq3"

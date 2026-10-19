@@ -11,6 +11,10 @@ source "$(dirname "${BASH_SOURCE[0]}")/../api/api_productos.sh"
 mostrar_menu_inventario() {
     local opcion
     local msj_api
+    # Declaramos las variables locales arriba para no pisar los códigos de salida de whiptail.
+    local id
+    local nombre
+    local precio
 
     while true; do
         # Mostramos en el título el nombre del usuario logueado usando la variable global.
@@ -35,13 +39,14 @@ mostrar_menu_inventario() {
         case $opcion in
             1)
                 # --- ALTA ---
-                local id=$(tui_input "Ingrese ID (numérico):")
+                # CAMBIO: Asignación separada de la declaración.
+                id=$(tui_input "Ingrese ID (numérico):")
                 [[ $? -ne 0 ]] && continue
 
-                local nombre=$(tui_input "Ingrese Nombre del producto:")
+                nombre=$(tui_input "Ingrese Nombre del producto:")
                 [[ $? -ne 0 ]] && continue
 
-                local precio=$(tui_input "Ingrese Precio:")
+                precio=$(tui_input "Ingrese Precio:")
                 [[ $? -ne 0 ]] && continue
 
                 # Llamamos a la API y evaluamos el código de error.
@@ -54,7 +59,8 @@ mostrar_menu_inventario() {
                 ;;
             2)
                 # --- BAJA ---
-                local id=$(tui_input "Ingrese el ID del producto a ELIMINAR:")
+                # CAMBIO: Asignación separada de la declaración.
+                id=$(tui_input "Ingrese el ID del producto a ELIMINAR:")
                 [[ $? -ne 0 ]] && continue
 
                 # Pedimos confirmación extra por seguridad.
@@ -69,13 +75,14 @@ mostrar_menu_inventario() {
                 ;;
             3)
                 # --- EDICIÓN ---
-                local id=$(tui_input "Ingrese el ID del producto a EDITAR:")
+                # CAMBIO: Asignación separada de la declaración.
+                id=$(tui_input "Ingrese el ID del producto a EDITAR:")
                 [[ $? -ne 0 ]] && continue
 
-                local nombre=$(tui_input "Ingrese el nuevo Nombre:")
+                nombre=$(tui_input "Ingrese el nuevo Nombre:")
                 [[ $? -ne 0 ]] && continue
 
-                local precio=$(tui_input "Ingrese el nuevo Precio:")
+                precio=$(tui_input "Ingrese el nuevo Precio:")
                 [[ $? -ne 0 ]] && continue
 
                 msj_api=$(api_editar_producto "$id" "$nombre" "$precio")

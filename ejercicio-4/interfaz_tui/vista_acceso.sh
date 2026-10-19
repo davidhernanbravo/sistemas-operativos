@@ -11,6 +11,9 @@ source "$(dirname "${BASH_SOURCE[0]}")/../api/api_usuarios.sh"
 mostrar_menu_acceso() {
     local opcion
     local msj_api
+    # Declaramos las variables locales arriba para evitar enmascarar los códigos de salida.
+    local user
+    local pass
 
     # El bucle mantiene al usuario en esta pantalla hasta que inicie sesión o elija salir.
     while true; do
@@ -30,11 +33,12 @@ mostrar_menu_acceso() {
         case $opcion in
             1)
                 # --- INICIO DE SESIÓN ---
-                local user=$(tui_input "Usuario:")
+                # CAMBIO: Asignación separada de la declaración para capturar correctamente la cancelación.
+                user=$(tui_input "Usuario:")
                 # Si el usuario cancela el input, volvemos al menú.
                 [[ $? -ne 0 ]] && continue 
 
-                local pass=$(tui_password "Contraseña:")
+                pass=$(tui_password "Contraseña:")
                 [[ $? -ne 0 ]] && continue
 
                 # Llamamos a la API. Guardamos el texto que devuelve en msj_api.
@@ -51,10 +55,11 @@ mostrar_menu_acceso() {
                 ;;
             2)
                 # --- REGISTRO DE USUARIO ---
-                local user=$(tui_input "Nuevo Usuario:")
+                # CAMBIO: Asignación separada de la declaración.
+                user=$(tui_input "Nuevo Usuario:")
                 [[ $? -ne 0 ]] && continue
 
-                local pass=$(tui_password "Nueva Contraseña:")
+                pass=$(tui_password "Nueva Contraseña:")
                 [[ $? -ne 0 ]] && continue
 
                 # Llamamos a la API de registro.
