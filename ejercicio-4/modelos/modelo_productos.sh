@@ -52,8 +52,9 @@ modelo_editar_producto() {
 }
 
 modelo_listar_productos() {
-    # Lectura iterando los registros.
-    # Imprimimos los datos puros separados por tabulador. La API se encargará de tomar esto y 
-    # transformarlo en código HTML para la vista.
-    sqlite3 -separator $'\t' "$DB_FILE" "SELECT id, nombre, precio FROM productos;" 2>>"$LOG_ERR"
+    # CAMBIO: Se eliminó el modificador de separador por tabulador.
+    # Usaremos el pipe '|' que es el delimitador por defecto de SQLite.
+    # Esto facilita armar el array de argumentos que necesita whiptail para mostrar listados de opciones que contienen 
+    # espacios en los nombres.
+    sqlite3 "$DB_FILE" "SELECT id, nombre, precio FROM productos;" 2>>"$LOG_ERR"
 }
