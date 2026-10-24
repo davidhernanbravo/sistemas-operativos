@@ -37,9 +37,19 @@ fi
 # Utilizamos el puerto definido en parametros.sh, o el 8080 como respaldo por defecto.
 declare puerto="${PUERTO_HTTP:-8080}"
 
+# MODIFICACIÓN: Captura de la IP local descartando interfaces virtuales secundarias.
+declare IP_LOCAL
+IP_LOCAL=$(hostname -I | awk '{print $1}')
+
 echo "[INFO] Entorno preparado. El servidor HTTP/CGI está en ejecución."
 echo "===================================================================================="
-echo "👉 Ingresá desde tu navegador a: http://localhost:${puerto}/interfaz_web/index.html"
+echo "👉 Acceso en esta PC: http://localhost:${puerto}/interfaz_web/index.html"
+
+# Si logró detectar una IP válida, imprime también la ruta de acceso para la red LAN.
+if [[ -n "$IP_LOCAL" ]]; then
+    echo "👉 Acceso en la red (celular/otra PC): http://${IP_LOCAL}:${puerto}/interfaz_web/index.html"
+fi
+
 echo "⏹️  Para apagar el sistema y liberar el puerto, presioná Ctrl+C."
 echo "===================================================================================="
 

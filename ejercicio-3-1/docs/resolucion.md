@@ -34,7 +34,7 @@ La estructura fue modularizada importando componentes mediante el comando nativo
 ---
 
 ## 2. Estructura de Carpetas
-
+```
 📦 sistemas-operativos/
 ├── 📁 ... (ejercicios anteriores aislados)
 └── 📁 ejercicio-3-1/
@@ -77,7 +77,7 @@ La estructura fue modularizada importando componentes mediante el comando nativo
     │
     └── 📁 salidas/
         └── 📊 reporte_productos.html    # Reporte estático de inventario exportado por el sistema
-
+```
 ---
 
 ## 3. Instrucciones de Ejecución
@@ -90,3 +90,4 @@ find . -type f -name "*.sh" -exec chmod +x {} +
 
 # 2. Levantá el servidor, que inicializará la BD y el entorno CGI.
 ./iniciar_servidor.sh
+```
