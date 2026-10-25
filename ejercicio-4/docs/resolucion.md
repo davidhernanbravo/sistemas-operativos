@@ -36,7 +36,7 @@ La estructura modularizada refleja la siguiente distribución de responsabilidad
 ```
 📦 sistemas-operativos/
 └── 📁 ejercicio-4/
-    ├── 🚀 iniciar_tui.sh                # Nuevo punto de entrada: verifica dependencias, inicializa BD y lanza la TUI
+    ├── 🚀 ejercicio-4.sh                # Nuevo punto de entrada: verifica dependencias, inicializa BD y lanza la TUI
     ├── 📁 docs/
     │   ├── 📄 consigna.md
     │   └── 📄 resolucion.md
@@ -65,4 +65,5 @@ Ubicado en la terminal dentro de la carpeta raíz del proyecto (`ejercicio-4`), 
 find . -type f -name "*.sh" -exec chmod +x {} +
 
 # 2. Levantar la aplicación TUI (verificará dependencias e inicializará la BD).
-./iniciar_tui.sh
+./ejercicio-4.sh
+```
