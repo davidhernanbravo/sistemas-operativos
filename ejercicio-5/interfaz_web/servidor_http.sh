@@ -56,8 +56,8 @@ procesar_rpc() {
     local proc uid uname arg1 arg2 arg3
     local salida estado
 
-    # Separamos los campos recibidos en formato TSV (separados por tabulador).
-    IFS=$'\t' read -r proc uid uname arg1 arg2 arg3 <<< "$linea_rpc"
+    # Separamos los campos recibidos (separados por pipe). Bash no colapsará pipes vacíos.
+    IFS='|' read -r proc uid uname arg1 arg2 arg3 <<< "$linea_rpc"
 
     # Hidratamos las variables globales de sesión para que la auditoría (sistema.log)
     # registre qué usuario está ejecutando la acción en esta petición.

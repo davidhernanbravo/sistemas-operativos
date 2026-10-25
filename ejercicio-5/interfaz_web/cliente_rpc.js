@@ -58,8 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const uid = sessionStorage.getItem('uid') || '';
         const uname = sessionStorage.getItem('uname') || '';
         
-        // Construimos el payload TSV: accion \t uid \t uname \t arg1 \t arg2...
-        const payload = [procedimiento, uid, uname, ...argumentos].join('\t');
+        // Construimos el payload separado por PIPES: accion | uid | uname | arg1 | arg2...
+        const payload = [procedimiento, uid, uname, ...argumentos].join('|');
         
         try {
             const respuesta = await fetch('/rpc', {
