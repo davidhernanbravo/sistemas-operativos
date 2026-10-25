@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # ==========================================================================
-#  ARCHIVO: iniciar_tui.sh
+#  ARCHIVO: ejercicio-4.sh
 #  DESCRIPCIÓN: Punto de entrada principal (Orquestador).
 #               Verifica dependencias, inicializa la BD y arranca el ciclo.
 # ==========================================================================
