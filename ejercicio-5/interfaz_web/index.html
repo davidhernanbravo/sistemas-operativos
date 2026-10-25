@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Gestor de Inventario Web</title>
+        <!-- Vinculamos la hoja de estilos y el script frontend. -->
+        <link rel="stylesheet" href="estilos.css">
+        <script src="cliente_rpc.js" defer></script>
+    </head>
+
+    <body>
+        <!-- Contenedor para inyectar notificaciones flotantes (Toast) desde JS. -->
+        <div id="toast-container" class="toast-container"></div>
+
+        <main class="app-container">
+            
+            <!-- ================================================== -->
+            <!--  VISTA 1: ACCESO Y REGISTRO (Módulo de Seguridad)  -->
+            <!-- ================================================== -->
+
+            <section id="vista-acceso" class="vista activa">
+                <div class="tarjeta-acceso">
+                    <div class="logo-container">
+                        <h1>📦 Sistema de Gestión</h1>
+                    </div>
+                    
+                    <!-- Formulario de Login. -->
+                    <form id="form-login" class="formulario activa">
+                        <h2>Iniciar Sesión</h2>
+                        <div class="grupo-input">
+                            <label for="login-user">Usuario</label>
+                            <input type="text" id="login-user" required autocomplete="username">
+                        </div>
+                        <div class="grupo-input">
+                            <label for="login-pass">Contraseña</label>
+                            <input type="password" id="login-pass" required autocomplete="current-password">
+                        </div>
+                        <button type="submit" class="btn btn-primario">Ingresar</button>
+                        <p class="toggle-form">¿No tenés cuenta? <a href="#" id="link-registro">Registrate acá</a></p>
+                    </form>
+
+                    <!-- Formulario de Registro (Oculto por defecto mediante CSS). -->
+                    <form id="form-registro" class="formulario oculta">
+                        <h2>Nuevo Usuario</h2>
+                        <div class="grupo-input">
+                            <label for="reg-user">Usuario</label>
+                            <input type="text" id="reg-user" required autocomplete="username">
+                        </div>
+                        <div class="grupo-input">
+                            <label for="reg-pass">Contraseña</label>
+                            <input type="password" id="reg-pass" required autocomplete="new-password">
+                        </div>
+                        <button type="submit" class="btn btn-secundario">Crear Cuenta</button>
+                        <p class="toggle-form">¿Ya tenés cuenta? <a href="#" id="link-login">Iniciá sesión</a></p>
+                    </form>
+                </div>
+            </section>
+
+            <!-- ===================================================== -->
+            <!--  VISTA 2: PANEL DE INVENTARIO (Módulo ABM y Listado)  -->
+            <!-- ===================================================== -->
+
+            <section id="vista-inventario" class="vista oculta">
+                
+                <header class="panel-header">
+                    <h2>📦 Inventario Activo</h2>
+                    <div class="usuario-info">
+                        <!-- El nombre de usuario se inyecta dinámicamente desde sessionStorage. -->
+                        <span id="label-usuario">Hola, Usuario</span>
+                        <button id="btn-cerrar-sesion" class="btn btn-peligro btn-chico">Salir</button>
+                    </div>
+                </header>
+
+                <div class="panel-layout">
+                    <!-- Columna Izquierda: Formulario de Alta y Edición. -->
+                    <aside class="panel-lateral">
+                        <form id="form-producto" class="tarjeta-formulario">
+                            <h3 id="titulo-form-producto">Alta de Producto</h3>
+                            
+                            <!-- Campo oculto para definir el estado del formulario en JS. -->
+                            <input type="hidden" id="prod-modo" value="alta"> 
+                            
+                            <div class="grupo-input">
+                                <label for="prod-id">ID Numérico</label>
+                                <input type="number" id="prod-id" required min="1">
+                            </div>
+                            <div class="grupo-input">
+                                <label for="prod-nombre">Descripción</label>
+                                <input type="text" id="prod-nombre" required>
+                            </div>
+                            <div class="grupo-input">
+                                <label for="prod-precio">Precio ($)</label>
+                                <input type="number" id="prod-precio" required min="0" step="0.01">
+                            </div>
+                            
+                            <div class="acciones-form">
+                                <button type="submit" class="btn btn-primario btn-block" id="btn-guardar-prod">Guardar</button>
+                                <button type="button" class="btn btn-secundario btn-block oculta" id="btn-cancelar-edicion">Cancelar</button>
+                            </div>
+                        </form>
+
+                        <!-- Módulo de Reportes. -->
+                        <div class="tarjeta-reporte">
+                            <h3>Reportes</h3>
+                            <button id="btn-generar-reporte" class="btn btn-info btn-block">Generar Reporte HTML</button>
+                            <a href="/reporte" target="_blank" id="link-ver-reporte" class="btn-link btn-block oculta">Ver Reporte</a>
+                        </div>
+                    </aside>
+
+                    <!-- Columna Derecha: Grilla de Datos. -->
+                    <main class="panel-principal">
+                        <div class="tabla-contenedor">
+                            <table class="tabla-datos">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Producto</th>
+                                        <th>Precio</th>
+                                        <th class="col-acciones">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-productos-body">
+                                    <!-- Las filas (<tr>) se inyectan dinámicamente mapeando la respuesta TSV del servidor RPC. -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </main>
+                </div>
+                
+            </section>
+        </main>
+    </body>
+</html>
