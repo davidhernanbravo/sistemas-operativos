@@ -16,26 +16,23 @@ api_registrar_usuario() {
 
     if [[ -z "$user" || -z "$pass" ]]; then
         manejar_error "Intento de registro con campos vacíos."
-        # CAMBIO: Eliminamos el JSON. Devolvemos texto plano para whiptail.
+        # Devolvemos texto plano para whiptail.
         echo "Usuario y contraseña son obligatorios."
         return 1
     fi
 
     if modelo_existe_usuario "$user"; then
         manejar_error "El usuario '$user' ya se encuentra registrado."
-        # CAMBIO: Eliminamos el JSON.
         echo "El usuario ya existe."
         return 1
     fi
 
     if modelo_registrar_usuario "$user" "$pass"; then
         log_accion "Registro de nuevo usuario: $user" "-" "$user"
-        # CAMBIO: Eliminamos el JSON.
         echo "Usuario registrado exitosamente."
         return 0
     else
         manejar_error "Fallo de BD al registrar usuario '$user'."
-        # CAMBIO: Eliminamos el JSON.
         echo "Error interno del sistema."
         return 1
     fi
@@ -65,7 +62,7 @@ api_iniciar_sesion() {
     if [[ "$hash_p" == "$db_hash" ]]; then
         log_accion "Inicio de sesión exitoso" "$db_id" "$user"
         
-        # CAMBIO CRÍTICO: Pasamos a un modelo stateful. Seteamos las variables globales de memoria.
+        # Usamos a un modelo stateful. Seteamos las variables globales de memoria.
         CURRENT_USER_ID="$db_id"
         CURRENT_USER_NAME="$user"
         
@@ -73,7 +70,6 @@ api_iniciar_sesion() {
         return 0
     else
         log_accion "Intento de inicio de sesión fallido (mala contraseña) para usuario: $user" "-" "$user"
-        # CAMBIO: Eliminamos el JSON.
         echo "Credenciales incorrectas."
         return 1
     fi
