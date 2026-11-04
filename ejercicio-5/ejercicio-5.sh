@@ -19,9 +19,9 @@ if ! command -v sqlite3 &> /dev/null; then
 fi
 
 # 2. Carga de módulos principales.
-# Importamos las rutas globales y el módulo de conexión a la base de datos.
+# Importamos las rutas globales y el módulo de inicialización de la base de datos.
 source "$(dirname "${BASH_SOURCE[0]}")/configuracion/parametros.sh"
-source "$(dirname "${BASH_SOURCE[0]}")/base_de_datos/conexion.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/base_de_datos/inicializar.sh"
 
 # 3. Verificación del script manejador HTTP/RPC.
 # Nos aseguramos de que el script que ejecutará socat exista y tenga permisos de ejecución.

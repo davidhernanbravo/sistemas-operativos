@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 
 # ===========================================================================
-#  ARCHIVO: base_de_datos/conexion.sh
-#  DESCRIPCIÓN: Inicializa la BD y centraliza la ejecución de consultas SQL.
+#  ARCHIVO: base_de_datos/inicializar.sh
+#  DESCRIPCIÓN: Inicializa la estructura de la base de datos SQLite.
+#  NOTA: No existe una "conexión" persistente en Bash. Cada invocación de
+#        sqlite3 abre y cierra la base en ese momento puntual. Por eso este
+#        módulo solo se ocupa de la inicialización y no de ejecutar consultas.
 # ===========================================================================
 
-# Importamos los parámetros globalmente por si este módulo se invoca desde otro lado.
+# Importamos los parámetros globales para acceder a las rutas de la BD y logs.
 source "$(dirname "${BASH_SOURCE[0]}")/../configuracion/parametros.sh"
 
 inicializar_db() {
@@ -30,10 +33,4 @@ inicializar_db() {
         # No imprimimos texto por stdout para evitar corromper las respuestas HTTP/RPC enviadas al cliente.
     fi
     return 0
-}
-
-ejecutar_query() {
-    local query="$1"
-    # Envuelve la ejecución de consultas e intercepta los errores mandándolos al log.
-    sqlite3 "$DB_FILE" "$query" 2>>"$LOG_ERR"
 }

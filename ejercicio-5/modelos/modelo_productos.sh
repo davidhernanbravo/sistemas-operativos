@@ -5,7 +5,7 @@
 #  DESCRIPCIÓN: Lógica de negocio y persistencia para la entidad Productos.
 # ==========================================================================
 
-source "$(dirname "${BASH_SOURCE[0]}")/../base_de_datos/conexion.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../configuracion/parametros.sh"
 source "$(dirname "${BASH_SOURCE[0]}")/../utilidades/seguridad.sh"
 
 modelo_existe_producto() {
@@ -13,7 +13,7 @@ modelo_existe_producto() {
     local count
 
     # Verificación de existencia de producto mediante SQLite3.
-    count=$(ejecutar_query "SELECT count(*) FROM productos WHERE id=$id;")
+    count=$(sqlite3 "$DB_FILE" "SELECT count(*) FROM productos WHERE id=$id;" 2>>"$LOG_ERR")
     [[ "$count" -gt 0 ]]
 }
 
@@ -26,7 +26,7 @@ modelo_alta_producto() {
     nombre_seguro=$(sanitizar_sql "$nombre")
 
     # Persistencia usando INSERT en SQLite3.
-    ejecutar_query "INSERT INTO productos (id, nombre, precio) VALUES ($id, '$nombre_seguro', $precio);"
+    sqlite3 "$DB_FILE" "INSERT INTO productos (id, nombre, precio) VALUES ($id, '$nombre_seguro', $precio);" 2>>"$LOG_ERR"
     return $?
 }
 
@@ -34,7 +34,7 @@ modelo_baja_producto() {
     local id="$1"
     
     # Eliminación con DELETE en SQLite3.
-    ejecutar_query "DELETE FROM productos WHERE id=$id;"
+    sqlite3 "$DB_FILE" "DELETE FROM productos WHERE id=$id;" 2>>"$LOG_ERR"
     return $?
 }
 
@@ -47,7 +47,7 @@ modelo_editar_producto() {
     nombre_seguro=$(sanitizar_sql "$nombre")
 
     # Edición directa con UPDATE en SQLite3.
-    ejecutar_query "UPDATE productos SET nombre='$nombre_seguro', precio=$precio WHERE id=$id;"
+    sqlite3 "$DB_FILE" "UPDATE productos SET nombre='$nombre_seguro', precio=$precio WHERE id=$id;" 2>>"$LOG_ERR"
     return $?
 }
 
